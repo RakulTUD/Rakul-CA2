@@ -1,0 +1,72 @@
+name: Deploy frontend to GKE
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - 'frontend-ca2/**'
+      - 'k8s/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: 
+      - main
+    paths:
+      - 'frontend-ca2/**'
+      - '.github/workflows/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: ./frontend-ca2
+        run: npm install
+
+      - name: Set Docker image names
+        id: vars
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/frontend-ca2" >> $GITHUB_ENV
+
+      - name: Build Docker image (latest and commit tag)
+        working-directory: ./frontend-ca2
+        run: |
+          docker build -t $IMAGE_NAME:latest .
+
+      - name: Log in to Docker Hub
+        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+
+      - name: Push Docker images
+        run: |
+          docker push $IMAGE_NAME:latest
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Set up Cloud SDK (with auth plugin bundled)
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: 'gke-gcloud-auth-plugin'
+
+      - name: Configure kubeconfig for GKE
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
+            --zone ${{ secrets.GKE_CLUSTER_ZONE }} \
+            --project ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/applications/frontend/fe-deployment.yml

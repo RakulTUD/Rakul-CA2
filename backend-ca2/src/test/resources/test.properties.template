@@ -1,0 +1,5 @@
+# MongoDB Test Configuration
+# Copy this file to test.properties and fill in your actual credentials
+databaseUrl=mongodb://<username>:<password>@<host>:<port>/<database>?authSource=admin
+databaseName=<database>
+databaseCollection=<collection> 
