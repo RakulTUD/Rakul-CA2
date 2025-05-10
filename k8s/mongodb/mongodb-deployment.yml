@@ -32,6 +32,8 @@ spec:
               value: "recipe_db"
             - name: MONGO_COLLECTION
               value: "recipe"
+            - name: MONGO_DISABLE_AUTH
+              value: "true"
           volumeMounts:
             - name: mongodb-storage
               mountPath: /data/db
