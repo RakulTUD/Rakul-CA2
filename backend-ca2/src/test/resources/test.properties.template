@@ -1,4 +1,4 @@
 # MongoDB Test Configuration
-databaseUrl=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb-service:27017/recipe_db?authSource=admin
+databaseUrl=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb-service:27017/recipe_db?authSource=admin
 databaseName=recipe_db
 databaseCollection=recipe
