@@ -15,7 +15,7 @@ spec:
       containers:
         - name: mongodb
           image: mongo:6.0
-          command: ["mongod", "--bind_ip_all", "--auth", "false"]
+          command: ["mongod", "--bind_ip_all", "--noauth"]
           ports:
             - containerPort: 27017
           env:
