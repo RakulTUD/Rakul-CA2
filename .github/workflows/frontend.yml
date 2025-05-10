@@ -36,19 +36,20 @@ jobs:
         id: vars
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
           echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/frontend-ca2" >> $GITHUB_ENV
-
-      - name: Build Docker image (latest and commit tag)
+      
+      - name: Build Docker image (commit SHA tag only)
         working-directory: ./frontend-ca2
         run: |
-          docker build -t $IMAGE_NAME:latest .
-
+          docker build -t $IMAGE_NAME:$SHORT_SHA .
+      
       - name: Log in to Docker Hub
         run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+      
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME:$SHORT_SHA
 
-      - name: Push Docker images
-        run: |
-          docker push $IMAGE_NAME:latest
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
