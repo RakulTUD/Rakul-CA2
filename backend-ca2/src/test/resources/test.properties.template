@@ -1,5 +1,4 @@
 # MongoDB Test Configuration
-# Copy this file to test.properties and fill in your actual credentials
-databaseUrl=mongodb://<username>:<password>@<host>:<port>/<database>?authSource=admin
-databaseName=<database>
-databaseCollection=<collection> 
+databaseUrl=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb-service:27017/recipe_db?authSource=admin
+databaseName=recipe_db
+databaseCollection=recipe
