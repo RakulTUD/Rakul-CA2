@@ -15,7 +15,7 @@ spec:
       containers:
         - name: mongodb
           image: mongo:6.0
-          command: ["mongod", "--bind_ip_all", "--noauth"]
+          command: ["mongod", "--bind_ip_all"]
           ports:
             - containerPort: 27017
           env:
@@ -33,8 +33,6 @@ spec:
               value: "recipe_db"
             - name: MONGO_COLLECTION
               value: "recipe"
-            - name: MONGO_DISABLE_AUTH
-              value: "true"
           volumeMounts:
             - name: mongodb-storage
               mountPath: /data/db
