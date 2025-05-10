@@ -70,4 +70,6 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/applications/frontend/fe-deployment.yml
+          envsubst < k8s/applications/frontend/fe-deployment.yml | kubectl apply -f -
+          # kubectl apply -f k8s/applications/frontend/fe-deployment.yml
+

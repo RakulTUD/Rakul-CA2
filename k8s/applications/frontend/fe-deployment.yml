@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: rakulrs/frontend-ca2:latest
+          image: rakulrs/frontend-ca2:SHORT_SHA
           ports:
             - containerPort: 3000
           env:
